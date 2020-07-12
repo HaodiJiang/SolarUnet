@@ -89,7 +89,7 @@ def pre_calulate_flux_and_contour(fits_files_dict, mask_2_class_dict, num_frames
         indices = np.indices(cur_mask_2_class.shape).T[:, :, [1, 0]]
 
         frame_filtered_comp = size_filter(labeled, indices, ncomponents, magnetic_field_size_threshold)
-        print('frame {} filtered_comp size'.format(i), len(frame_filtered_comp))
+        # print('frame {} filtered_comp size'.format(i), len(frame_filtered_comp))
         frame_flux_dict = create_elements_flux_dict(frame_filtered_comp, cur_fits)
         # print('----------------frame {} flux calculation done----------------'.format(i))
         frame_contour_dict = create_elements_contour_dict(frame_filtered_comp, cur_mask_2_class)
