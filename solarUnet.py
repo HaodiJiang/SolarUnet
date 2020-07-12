@@ -33,85 +33,63 @@ import matplotlib.image as mpimg
 import matplotlib.colors as mpcolor
 
 
-def solarUnet(pretrained_weights = None,input_size = (720,720,1)):
+def conv2_block(input_tensor, n_filters):
+    x = Conv2D(n_filters, 3, activation='relu', padding='same', kernel_initializer='he_normal')(input_tensor)
+    x = BatchNormalization()(x)
+    x = Conv2D(n_filters, 3, activation='relu', padding='same', kernel_initializer='he_normal')(x)
+    x = BatchNormalization()(x)
+    return x
+
+def solarUnet(pretrained_weights = None, n_filters=32, input_size = (720,720,1)):
     inputs = Input(input_size)
-    conv1 = Conv2D(32, 3, activation='relu', padding='same', kernel_initializer='he_normal')(inputs)
-    conv1 = BatchNormalization()(conv1)
-    conv1 = Conv2D(32, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv1)
-    conv1 = BatchNormalization()(conv1)
+    conv1 = conv2_block(inputs, n_filters * 1)
     pool1 = MaxPooling2D(pool_size=(2, 2))(conv1)
     drop1 = Dropout(0.5)(pool1)
 
-    conv2 = Conv2D(64, 3, activation='relu', padding='same', kernel_initializer='he_normal')(drop1)
-    conv2 = BatchNormalization()(conv2)
-    conv2 = Conv2D(64, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv2)
-    conv2 = BatchNormalization()(conv2)
+    conv2 = conv2_block(drop1, n_filters * 2)
     pool2 = MaxPooling2D(pool_size=(2, 2))(conv2)
     drop2 = Dropout(0.5)(pool2)
 
-    conv3 = Conv2D(128, 3, activation='relu', padding='same', kernel_initializer='he_normal')(drop2)
-    conv3 = BatchNormalization()(conv3)
-    conv3 = Conv2D(128, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv3)
-    conv3 = BatchNormalization()(conv3)
+    conv3 = conv2_block(drop2, n_filters * 4)
     pool3 = MaxPooling2D(pool_size=(2, 2))(conv3)
     drop3 = Dropout(0.5)(pool3)
 
-    conv4 = Conv2D(256, 3, activation='relu', padding='same', kernel_initializer='he_normal')(drop3)
-    conv4 = BatchNormalization()(conv4)
-    conv4 = Conv2D(256, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv4)
-    conv4 = BatchNormalization()(conv4)
+    conv4 = conv2_block(drop3, n_filters * 8)
     pool4 = MaxPooling2D(pool_size=(2, 2))(conv4)
     drop4 = Dropout(0.5)(pool4)
 
-    conv5 = Conv2D(512, 3, activation='relu', padding='same', kernel_initializer='he_normal')(drop4)
-    conv5 = BatchNormalization()(conv5)
-    conv5 = Conv2D(512, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv5)
-    conv5 = BatchNormalization()(conv5)
+    conv5 = conv2_block(drop4, n_filters * 16)
     drop5 = Dropout(0.5)(conv5)
 
-    up6 = Conv2D(256, 2, activation='relu', padding='same', kernel_initializer='he_normal')(
+    up6 = Conv2D(n_filters * 8, 2, activation='relu', padding='same', kernel_initializer='he_normal')(
         UpSampling2D(size=(2, 2))(drop5))
     merge6 = concatenate([conv4, up6], axis=3)
     drop6 = Dropout(0.5)(merge6)
-    conv6 = Conv2D(256, 3, activation='relu', padding='same', kernel_initializer='he_normal')(drop6)
-    conv6 = BatchNormalization()(conv6)
-    conv6 = Conv2D(256, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv6)
-    conv6 = BatchNormalization()(conv6)
+    conv6 = conv2_block(drop6, n_filters * 8)
 
-    up7 = Conv2D(128, 2, activation='relu', padding='same', kernel_initializer='he_normal')(
+    up7 = Conv2D(n_filters * 4, 2, activation='relu', padding='same', kernel_initializer='he_normal')(
         UpSampling2D(size=(2, 2))(conv6))
     merge7 = concatenate([conv3, up7], axis=3)
     drop7 = Dropout(0.5)(merge7)
-    conv7 = Conv2D(128, 3, activation='relu', padding='same', kernel_initializer='he_normal')(drop7)
-    conv7 = BatchNormalization()(conv7)
-    conv7 = Conv2D(128, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv7)
-    conv7 = BatchNormalization()(conv7)
+    conv7 = conv2_block(drop7, n_filters * 4)
 
-    up8 = Conv2D(128, 2, activation='relu', padding='same', kernel_initializer='he_normal')(
+    up8 = Conv2D(n_filters * 2, 2, activation='relu', padding='same', kernel_initializer='he_normal')(
         UpSampling2D(size=(2, 2))(conv7))
     merge8 = concatenate([conv2, up8], axis=3)
     drop8 = Dropout(0.5)(merge8)
-    conv8 = Conv2D(128, 3, activation='relu', padding='same', kernel_initializer='he_normal')(drop8)
-    conv8 = BatchNormalization()(conv8)
-    conv8 = Conv2D(128, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv8)
-    conv8 = BatchNormalization()(conv8)
+    conv8 = conv2_block(drop8, n_filters * 2)
 
-    up9 = Conv2D(32, 2, activation='relu', padding='same', kernel_initializer='he_normal')(
+    up9 = Conv2D(n_filters * 1, 2, activation='relu', padding='same', kernel_initializer='he_normal')(
         UpSampling2D(size=(2, 2))(conv8))
     merge9 = concatenate([conv1, up9], axis=3)
     drop9 = Dropout(0.5)(merge9)
-    conv9 = Conv2D(32, 3, activation='relu', padding='same', kernel_initializer='he_normal')(drop9)
-    conv9 = BatchNormalization()(conv9)
-    conv9 = Conv2D(32, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv9)
-    conv9 = BatchNormalization()(conv9)
-    # conv9 = Conv2D(2, 3, activation='relu', padding='same', kernel_initializer='he_normal')(conv9)
+    conv9 = conv2_block(drop9, n_filters * 1)
+
     conv10 = Conv2D(1, 1, activation='sigmoid')(conv9)
 
     model = Model(inputs=inputs, outputs=conv10)
-
     model.compile(optimizer=Adam(lr=1e-4), loss='binary_crossentropy', metrics=['accuracy'])
 
-    # model.summary()
     if (pretrained_weights):
         model.load_weights(pretrained_weights)
 
@@ -141,24 +119,24 @@ def train_generator(batch_size, train_path, image_folder, mask_folder):
     mask_datagen = ImageDataGenerator(**data_gen_args)
     image_generator = image_datagen.flow_from_directory(
         train_path,
-        classes = [image_folder],
-        class_mode = None,
-        color_mode = "grayscale",
-        target_size = (720,720),
-        batch_size = batch_size,
-        seed = 1)
+        classes=[image_folder],
+        class_mode=None,
+        color_mode="grayscale",
+        target_size=(720,720),
+        batch_size=batch_size,
+        seed=1)
     mask_generator = mask_datagen.flow_from_directory(
         train_path,
-        classes = [mask_folder],
-        class_mode = None,
-        color_mode = "grayscale",
-        target_size = (720,720),
-        batch_size = batch_size,
-        seed = 1)
+        classes=[mask_folder],
+        class_mode=None,
+        color_mode="grayscale",
+        target_size=(720,720),
+        batch_size=batch_size,
+        seed=1)
     train_generator = zip(image_generator, mask_generator)
-    for (img,mask) in train_generator:
-        img,mask = adjust_data(img,mask)
-        yield (img,mask)
+    for (img, mask) in train_generator:
+        img,mask = adjust_data(img, mask)
+        yield (img, mask)
 
 
 def validation_generator(batch_size, train_path,image_folder, mask_folder):
@@ -175,40 +153,40 @@ def validation_generator(batch_size, train_path,image_folder, mask_folder):
     mask_datagen = ImageDataGenerator(**data_gen_args)
     image_generator = image_datagen.flow_from_directory(
         train_path,
-        classes = [image_folder],
-        class_mode = None,
-        color_mode = "grayscale",
-        target_size = (720,720),
-        batch_size = batch_size,
-        seed = 1)
+        classes=[image_folder],
+        class_mode=None,
+        color_mode="grayscale",
+        target_size=(720,720),
+        batch_size=batch_size,
+        seed=1)
     mask_generator = mask_datagen.flow_from_directory(
         train_path,
-        classes = [mask_folder],
-        class_mode = None,
-        color_mode = "grayscale",
-        target_size = (720,720),
-        batch_size = batch_size,
-        seed = 1)
+        classes=[mask_folder],
+        class_mode=None,
+        color_mode="grayscale",
+        target_size=(720,720),
+        batch_size=batch_size,
+        seed=1)
     validation_generator = zip(image_generator, mask_generator)
-    for (img,mask) in validation_generator:
-        img,mask = adjust_data(img,mask)
-        yield (img,mask)
+    for (img, mask) in validation_generator:
+        img,mask = adjust_data(img, mask)
+        yield (img, mask)
 
 
-def test_generator(test_path, num_image=1, target_size =(720,720)):
+def test_generator(test_path, target_size=(720,720)):
     for name in os.listdir(test_path):
-        img = io.imread(os.path.join(test_path, name),as_gray=True)
+        img = io.imread(os.path.join(test_path, name), as_gray=True)
         img = img / 255
-        img = trans.resize(img,target_size)
+        img = trans.resize(img, target_size)
         img = np.reshape(img, img.shape + (1,))
-        img = np.reshape(img,(1,)+img.shape)
+        img = np.reshape(img, (1,) + img.shape)
         yield img
 
 
-def save_result(save_path,npyfile):
-    for i,item in enumerate(npyfile):
+def save_result(save_path, result):
+    for i, item in enumerate(result):
         img = np.round(item) * 255
-        cv2.imwrite(os.path.join(save_path,"predicted_mask_{0:03}.png".format(i)), img)
+        cv2.imwrite(os.path.join(save_path, "predicted_mask_{0:03}.png".format(i)), img)
 
 
 def pre_process(input_3_class_mask_path, output_path):
@@ -379,7 +357,7 @@ def model_training(input_path):
     train_datagen = train_generator(1, input_path+'train', 'image', 'label')
     model = solarUnet()
     model_checkpoint = ModelCheckpoint('solarUnet_magnetic.hdf5', monitor='loss',verbose=1, save_best_only=True)
-    model.fit_generator(train_datagen, steps_per_epoch=10000, epochs=1, verbose=2, callbacks=[model_checkpoint])
+    model.fit_generator(train_datagen, steps_per_epoch=10000, epochs=1, verbose=1, callbacks=[model_checkpoint])
 
 
 def model_predict(input_path, output_path, pretrain=False):
