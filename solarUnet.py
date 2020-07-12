@@ -40,7 +40,8 @@ def conv2_block(input_tensor, n_filters):
     x = BatchNormalization()(x)
     return x
 
-def solarUnet(pretrained_weights = None, n_filters=32, input_size = (720,720,1)):
+
+def solarUnet(pretrained_weights=None, n_filters=32, input_size=(720, 720, 1)):
     inputs = Input(input_size)
     conv1 = conv2_block(inputs, n_filters * 1)
     pool1 = MaxPooling2D(pool_size=(2, 2))(conv1)
@@ -96,7 +97,7 @@ def solarUnet(pretrained_weights = None, n_filters=32, input_size = (720,720,1))
     return model
 
 
-def adjust_data(img,mask):
+def adjust_data(img, mask):
     if np.max(img) > 1:
         img = img / 255
         mask = mask /255
@@ -136,7 +137,7 @@ def train_generator(batch_size, train_path, image_folder, mask_folder):
     train_generator = zip(image_generator, mask_generator)
     for (img, mask) in train_generator:
         img,mask = adjust_data(img, mask)
-        yield (img, mask)
+        yield img, mask
 
 
 def validation_generator(batch_size, train_path,image_folder, mask_folder):
@@ -170,7 +171,7 @@ def validation_generator(batch_size, train_path,image_folder, mask_folder):
     validation_generator = zip(image_generator, mask_generator)
     for (img, mask) in validation_generator:
         img,mask = adjust_data(img, mask)
-        yield (img, mask)
+        yield img, mask
 
 
 def test_generator(test_path, target_size=(720,720)):
