@@ -1,4 +1,4 @@
-# Tracking Magnetic Flux Elements and Tracing Chromospheric Fibrils Using Deep Learning
+# Identifying and Tracking Solar Magnetic Flux Elements with Deep Learning
 
 Haodi Jiang, Jiasheng Wang, Chang liu, Ju Jing, Hao Liu, Jason T.L. Wang and Haimin Wang
 
