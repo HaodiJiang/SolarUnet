@@ -29,6 +29,7 @@ This Jupyter notebook demos the usage of solarUnet.
 
 Requirement: 
 Tensorflow-GPU 1.12.0 
+
 Keras 2.2.4
 astropy 4.01
 numpy 1.16.1
