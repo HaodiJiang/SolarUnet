@@ -40,7 +40,8 @@ def conv2_block(input_tensor, n_filters):
     x = BatchNormalization()(x)
     return x
 
-def solarUnet(pretrained_weights = None, n_filters=32, input_size = (720,720,1)):
+
+def solarUnet(pretrained_weights=None, n_filters=32, input_size=(720, 720, 1)):
     inputs = Input(input_size)
     conv1 = conv2_block(inputs, n_filters * 1)
     pool1 = MaxPooling2D(pool_size=(2, 2))(conv1)
@@ -96,7 +97,7 @@ def solarUnet(pretrained_weights = None, n_filters=32, input_size = (720,720,1))
     return model
 
 
-def adjust_data(img,mask):
+def adjust_data(img, mask):
     if np.max(img) > 1:
         img = img / 255
         mask = mask /255
@@ -136,7 +137,7 @@ def train_generator(batch_size, train_path, image_folder, mask_folder):
     train_generator = zip(image_generator, mask_generator)
     for (img, mask) in train_generator:
         img,mask = adjust_data(img, mask)
-        yield (img, mask)
+        yield img, mask
 
 
 def validation_generator(batch_size, train_path,image_folder, mask_folder):
@@ -170,7 +171,7 @@ def validation_generator(batch_size, train_path,image_folder, mask_folder):
     validation_generator = zip(image_generator, mask_generator)
     for (img, mask) in validation_generator:
         img,mask = adjust_data(img, mask)
-        yield (img, mask)
+        yield img, mask
 
 
 def test_generator(test_path, target_size=(720,720)):
@@ -289,18 +290,27 @@ def post_process():
                 else:
                     mask_3[i][j] = 0  # 255 white
         cv2.imwrite(output_mask_2_path + 'mask_2_class_{0:03}.png'.format(file_index), mask_3)
-
     print('Postprocess done')
 
-def plot_mask():
-    input_path = 'results/processed_data_for_tracking/mask_3_class/'
-    output_path = 'results/demo_plots/'
-    img = mpimg.imread(input_path + 'mask_3_class_001.png')
-    fig, ax = plt.subplots()
 
-    ax.imshow(img, cmap='gray', extent=(413, 473, -204, -144))
-    ax.set_xlabel("E-W (arcsec)", fontsize=10)
-    ax.set_ylabel("S-N (arcsec)", fontsize=10)
+def plot_mask():
+    predicted_mask_path = 'results/processed_data_for_tracking/mask_3_class/'
+    testing_image_path = 'data/magnetic/test/'
+    output_path = 'results/demo_plots/'
+
+    img = mpimg.imread(testing_image_path + 'frame_1.png')
+    mask = mpimg.imread(predicted_mask_path + 'mask_3_class_001.png')
+    fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 4))
+
+    ax[0].imshow(img, cmap='gray', extent=(413, 473, -204, -144))
+    ax[0].set_xlabel("E-W (arcsec)", fontsize=10)
+    ax[0].set_ylabel("S-N (arcsec)", fontsize=10)
+    ax[0].set_title('Testing frame', fontsize=12)
+
+    ax[1].imshow(mask, cmap='gray', extent=(413, 473, -204, -144))
+    ax[1].set_xlabel("E-W (arcsec)", fontsize=10)
+    ax[1].set_ylabel("S-N (arcsec)", fontsize=10)
+    ax[1].set_title('SolarUnet mask', fontsize=12)
 
     plt.savefig(output_path+'demo_3_class_masks.png', bbox_inches='tight')
     plt.show()
