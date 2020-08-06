@@ -190,7 +190,7 @@ def save_result(save_path, result):
         cv2.imwrite(os.path.join(save_path, "predicted_mask_{0:03}.png".format(i)), img)
 
 
-def pre_process(input_3_class_mask_path, output_path):
+def pre_processing(input_3_class_mask_path, output_path):
     """
     convert SWAMIS 3-class maks to 2-class
     user may provide their own path
@@ -216,7 +216,7 @@ def pre_process(input_3_class_mask_path, output_path):
         cv2.imwrite('{}{}.png'.format(output_path, name[:-4]), output_image)
 
 
-def post_process():
+def post_processing():
     """read corresponding predicted_mask field data"""
     predicted_mask_2_path = 'results/predicted_mask/'
     output_mask_2_path = 'results/processed_data_for_tracking/mask_2_class/'
@@ -370,7 +370,7 @@ def model_training(input_path):
     model.fit_generator(train_datagen, steps_per_epoch=10000, epochs=1, verbose=1, callbacks=[model_checkpoint])
 
 
-def model_predict(input_path, output_path, pretrain=False):
+def model_predicting(input_path, output_path, pretrain=False):
     """use trained model to predict predicted_mask"""
     if pretrain:
         model = solarUnet('pretrained_model/solarUnet_magnetic.hdf5')
