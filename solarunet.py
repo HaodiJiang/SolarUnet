@@ -373,7 +373,7 @@ def model_training(input_path):
 def model_predicting(input_path, output_path, pretrain=False):
     """use trained model to predict predicted_mask"""
     if pretrain:
-        model = solarUnet('pretrained_model/solarunet_magnetic.hdf5')
+        model = solarUnet('pretrained_model/solarUnet_magnetic.hdf5')
     else:
         model = solarUnet('solarunet_magnetic.hdf5')
     test_datagen = test_generator(input_path+'test')
