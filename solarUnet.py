@@ -190,7 +190,7 @@ def save_result(save_path, result):
         cv2.imwrite(os.path.join(save_path, "predicted_mask_{0:03}.png".format(i)), img)
 
 
-def pre_process(input_3_class_mask_path, output_path):
+def pre_processing(input_3_class_mask_path, output_path):
     """
     convert SWAMIS 3-class maks to 2-class
     user may provide their own path
@@ -216,7 +216,7 @@ def pre_process(input_3_class_mask_path, output_path):
         cv2.imwrite('{}{}.png'.format(output_path, name[:-4]), output_image)
 
 
-def post_process():
+def post_processing():
     """read corresponding predicted_mask field data"""
     predicted_mask_2_path = 'results/predicted_mask/'
     output_mask_2_path = 'results/processed_data_for_tracking/mask_2_class/'
@@ -290,7 +290,7 @@ def post_process():
                 else:
                     mask_3[i][j] = 0  # 255 white
         cv2.imwrite(output_mask_2_path + 'mask_2_class_{0:03}.png'.format(file_index), mask_3)
-    print('Postprocess done')
+    # print('Postprocess done')
 
 
 def plot_mask():
@@ -305,12 +305,12 @@ def plot_mask():
     ax[0].imshow(img, cmap='gray', extent=(413, 473, -204, -144))
     ax[0].set_xlabel("E-W (arcsec)", fontsize=10)
     ax[0].set_ylabel("S-N (arcsec)", fontsize=10)
-    ax[0].set_title('Testing frame', fontsize=12)
+    ax[0].set_title('Testing Magnetogram', fontsize=12)
 
     ax[1].imshow(mask, cmap='gray', extent=(413, 473, -204, -144))
     ax[1].set_xlabel("E-W (arcsec)", fontsize=10)
     ax[1].set_ylabel("S-N (arcsec)", fontsize=10)
-    ax[1].set_title('SolarUnet mask', fontsize=12)
+    ax[1].set_title('SolarUnet Mask', fontsize=12)
 
     plt.savefig(output_path+'demo_3_class_masks.png', bbox_inches='tight')
     plt.show()
@@ -370,7 +370,7 @@ def model_training(input_path):
     model.fit_generator(train_datagen, steps_per_epoch=10000, epochs=1, verbose=1, callbacks=[model_checkpoint])
 
 
-def model_predict(input_path, output_path, pretrain=False):
+def model_predicting(input_path, output_path, pretrain=False):
     """use trained model to predict predicted_mask"""
     if pretrain:
         model = solarUnet('pretrained_model/solarUnet_magnetic.hdf5')
