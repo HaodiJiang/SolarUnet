@@ -366,16 +366,16 @@ def model_training(input_path):
     """
     train_datagen = train_generator(1, input_path+'train', 'image', 'label')
     model = solarUnet()
-    model_checkpoint = ModelCheckpoint('solarUnet_magnetic.hdf5', monitor='loss',verbose=1, save_best_only=True)
+    model_checkpoint = ModelCheckpoint('solarunet_magnetic.hdf5', monitor='loss',verbose=1, save_best_only=True)
     model.fit_generator(train_datagen, steps_per_epoch=10000, epochs=1, verbose=1, callbacks=[model_checkpoint])
 
 
 def model_predicting(input_path, output_path, pretrain=False):
     """use trained model to predict predicted_mask"""
     if pretrain:
-        model = solarUnet('pretrained_model/solarUnet_magnetic.hdf5')
+        model = solarUnet('pretrained_model/solarunet_magnetic.hdf5')
     else:
-        model = solarUnet('solarUnet_magnetic.hdf5')
+        model = solarUnet('solarunet_magnetic.hdf5')
     test_datagen = test_generator(input_path+'test')
     results = model.predict_generator(test_datagen, 3, verbose=1)
     save_result(output_path, results)
