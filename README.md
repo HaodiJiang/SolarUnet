@@ -2,7 +2,7 @@
 
 Haodi Jiang, Jiasheng Wang, Chang liu, Ju Jing, Hao Liu, Jason T.L. Wang and Haimin Wang
 
-New Jersey Institute of Technology
+Institute for Space Weather Sciences, New Jersey Institute of Technology
 
 ## Abstract
 
@@ -28,3 +28,9 @@ can be considered as an alternative method for solar magnetic tracking.
 Requirements: 
 
 Tensorflow-GPU 1.12.0, Keras 2.2.4, astropy 4.0.1, numpy 1.16.1, scipy 1.2.0, sklearn 0.20.3, skimage 0.15.0, matplotlib 3.1.0, cv2 3.4.2.
+
+Reference:
+
+Identifying and Tracking Solar Magnetic Flux Elements with Deep Learning. Jiang, H., Wang, J., Liu, C., et al. 2020, ApJS, 250, 5,
+
+https://iopscience.iop.org/article/10.3847/1538-4365/aba4aa
