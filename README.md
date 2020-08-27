@@ -6,7 +6,7 @@ New Jersey Institute of Technology
 
 ## Abstract
 
-Deep learning has drawn a lot of interest in recent years due to its effectiveness in processing 
+Deep learning has drawn significant interest in recent years due to its effectiveness in processing 
 big and complex observational data gathered from diverse instruments. 
 Here we propose a new deep learning method, called SolarUnet, 
 to identify and track solar magnetic flux elements or features in observed vector
