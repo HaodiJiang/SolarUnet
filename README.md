@@ -1,6 +1,6 @@
 # Identifying and Tracking Solar Magnetic Flux Elements with Deep Learning
 
-Haodi Jiang, Jiasheng Wang, Chang liu, Ju Jing, Hao Liu, Jason T. L. Wang and Haimin Wang
+Haodi Jiang, Jiasheng Wang, Chang Liu, Ju Jing, Hao Liu, Jason T. L. Wang and Haimin Wang
 
 Institute for Space Weather Sciences, New Jersey Institute of Technology
 
