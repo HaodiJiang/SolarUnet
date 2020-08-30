@@ -16,6 +16,9 @@
 # =========================================================================
 
 import os
+import sys
+stderr = sys.stderr
+sys.stderr = open(os.devnull, 'w')
 import cv2
 import matplotlib
 import skimage.io as io
@@ -26,7 +29,7 @@ from keras.layers import *
 from keras.models import *
 from keras.optimizers import *
 from keras.preprocessing.image import ImageDataGenerator
-
+sys.stderr = stderr
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
