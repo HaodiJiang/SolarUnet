@@ -14,7 +14,7 @@
 #   software for any purpose.  It is provided "as is" without
 #   express or implied warranty.
 # =========================================================================
-
+import numpy as np
 import os
 import sys
 stderr = sys.stderr
@@ -30,10 +30,12 @@ from keras.models import *
 from keras.optimizers import *
 from keras.preprocessing.image import ImageDataGenerator
 sys.stderr = stderr
-matplotlib.use('TkAgg')
+#matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import matplotlib.colors as mpcolor
+import warnings
+warnings.filterwarnings('ignore')
 
 
 def conv2_block(input_tensor, n_filters):
@@ -92,7 +94,7 @@ def solarUnet(pretrained_weights=None, n_filters=32, input_size=(720, 720, 1)):
     conv10 = Conv2D(1, 1, activation='sigmoid')(conv9)
 
     model = Model(inputs=inputs, outputs=conv10)
-    model.compile(optimizer=Adam(lr=1e-4), loss='binary_crossentropy', metrics=['accuracy'])
+    
 
     if (pretrained_weights):
         model.load_weights(pretrained_weights)
@@ -369,6 +371,7 @@ def model_training(input_path):
     """
     train_datagen = train_generator(1, input_path+'train', 'image', 'label')
     model = solarUnet()
+    model.compile(optimizer="Adam", loss='binary_crossentropy', metrics=['accuracy'])
     model_checkpoint = ModelCheckpoint('solarunet_magnetic.hdf5', monitor='loss',verbose=1, save_best_only=True)
     model.fit_generator(train_datagen, steps_per_epoch=10000, epochs=1, verbose=1, callbacks=[model_checkpoint])
 
