@@ -381,7 +381,7 @@ def model_predicting(input_path, output_path, pretrain=False):
     if pretrain:
         model = solarUnet('pretrained_model/solarUnet_magnetic.hdf5')
     else:
-        model = solarUnet('solarunet_magnetic.hdf5')
+        model = solarUnet('pretrained_model/solarunet_magnetic.hdf5')
     test_datagen = test_generator(input_path+'test')
     results = model.predict_generator(test_datagen, 3, verbose=1)
     save_result(output_path, results)
