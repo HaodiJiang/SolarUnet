@@ -360,7 +360,7 @@ def plot_tracking_results():
     cb.ax.tick_params(labelsize=fontsize)
     cb.set_label('Gauss', fontsize=fontsize)
 
-    plt.savefig(output_path+'demo_tracking_result.png', bbox_inches='tight')
+    plt.savefig(output_path+'demo_tracking_result.png', bbox_inches='tight', dpi=500)
     plt.show()
 
 
